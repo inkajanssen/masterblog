@@ -1,5 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import json
+
 app = Flask(__name__)
 
 def load_blog_posts():
@@ -10,9 +11,15 @@ def load_blog_posts():
 @app.route('/')
 def index():
     blog_posts = load_blog_posts()
-
     return render_template('index.html', posts=blog_posts)
 
+
+app.route('/add', methods=['GET', 'POST'])
+def add():
+    #if request.method == 'POST':
+        # We will fill this in the next step TODO
+        #pass
+    return render_template('add.html')
 
 
 if __name__ == '__main__':
