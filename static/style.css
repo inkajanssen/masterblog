@@ -67,6 +67,7 @@ h1 {
 }
 
 .submit-button,
+.delete-button,
 .reset-button {
     padding: 10px 15px;
     border: none;
@@ -94,4 +95,13 @@ h1 {
 
 .reset-button:hover {
     background-color: #5a6268;
+}
+
+.delete-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #8B0000;
 }
