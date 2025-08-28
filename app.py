@@ -5,6 +5,10 @@ app = Flask(__name__)
 
 
 def load_blog_posts():
+    """
+    Load the Json Data
+    :return:
+    """
     try:
         with open("data/blog_post_data.json", "r", encoding="utf-8") as file:
             return json.load(file)
@@ -13,6 +17,11 @@ def load_blog_posts():
 
 
 def save_blog_posts(entry: dict):
+    """
+    Saves a new post at the end of the JSON data
+    :param entry:
+    :return:
+    """
     blog_posts = load_blog_posts()
     blog_posts.append(entry)
 
@@ -21,11 +30,21 @@ def save_blog_posts(entry: dict):
 
 
 def delete_blog_post(new_blog_posts:list):
-
+    """
+    Saves after deleting a post
+    :param new_blog_posts:
+    :return:
+    """
     with open("data/blog_post_data.json", "w", encoding="utf-8") as file:
         json.dump(new_blog_posts, file)
 
+
 def update_blog_post(new_blog_post:dict):
+    """
+    Updates a post and saves it
+    :param new_blog_post:
+    :return:
+    """
     blog_posts = load_blog_posts()
 
     for post in blog_posts:
@@ -40,6 +59,11 @@ def update_blog_post(new_blog_post:dict):
 
 
 def fetch_post_by_id(post_id):
+    """
+    Fetches post by id
+    :param post_id:
+    :return:
+    """
     blog_posts = load_blog_posts()
     for post in blog_posts:
         if post_id == post.get('id'):
@@ -49,12 +73,22 @@ def fetch_post_by_id(post_id):
 
 @app.route('/')
 def index():
+    """
+    This route will display all blog posts.
+    It links to add another post.
+    Gives the option to update or delete a post
+    :return:
+    """
     blog_posts = load_blog_posts()
     return render_template('index.html', posts=blog_posts)
 
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
+    """
+    A route to our blog application that will allow us to add a new blog post
+    :return:
+    """
     if request.method == 'POST':
         blog_posts = load_blog_posts()
         author = request.form.get('author')
@@ -72,14 +106,26 @@ def add():
 
 @app.route('/delete/<int:post_id>', methods=['POST'])
 def delete(post_id):
+    """
+     A route to handle the deletion of blog posts
+    :param post_id:
+    :return:
+    """
     blog_posts = load_blog_posts()
+    # Find the blog post with the given id and remove it from the list
     blog_posts = [post for post in blog_posts if post.get('id') != post_id ]
     delete_blog_post(blog_posts)
+    # Redirect back to the home page
     return redirect(url_for('index'))
 
 
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
 def update(post_id):
+    """
+    Add a route to update an existing blog post
+    :param post_id:
+    :return:
+    """
     # Fetch the blog posts from the JSON file
     post = fetch_post_by_id(post_id)
     if post is None:
