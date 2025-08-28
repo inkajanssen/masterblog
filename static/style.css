@@ -68,6 +68,7 @@ h1 {
 
 .submit-button,
 .delete-button,
+.update-button,
 .reset-button {
     padding: 10px 15px;
     border: none;
@@ -79,13 +80,12 @@ h1 {
     transition: background-color 0.3s ease;
 }
 
-.submit-button {
+.submit-button,
+.delete-button,
+.update-button
+{
     background-color: #007bff;
     color: white;
-}
-
-.submit-button:hover {
-    background-color: #0056b3;
 }
 
 .reset-button {
@@ -93,15 +93,18 @@ h1 {
     color: white;
 }
 
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
 .reset-button:hover {
     background-color: #5a6268;
 }
 
-.delete-button {
-    background-color: #007bff;
-    color: white;
-}
-
 .delete-button:hover {
     background-color: #8B0000;
+}
+
+.update-button:hover {
+    background-color: #D1CC24;
 }

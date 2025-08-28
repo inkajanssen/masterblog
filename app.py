@@ -25,6 +25,27 @@ def delete_blog_post(new_blog_posts:list):
     with open("data/blog_post_data.json", "w", encoding="utf-8") as file:
         json.dump(new_blog_posts, file)
 
+def update_blog_post(new_blog_post:dict):
+    blog_posts = load_blog_posts()
+
+    for post in blog_posts:
+        if post.get('id') == new_blog_post.get('id'):
+            post['author'] = new_blog_post.get('author')
+            post['title'] = new_blog_post.get('title')
+            post['content'] = new_blog_post.get('content')
+            break
+
+    with open("data/blog_post_data.json", "w", encoding="utf-8") as file:
+        json.dump(blog_posts, file)
+
+
+def fetch_post_by_id(post_id):
+    blog_posts = load_blog_posts()
+    for post in blog_posts:
+        if post_id == post.get('id'):
+            return post
+    return f"{post_id} not found in the blog posts"
+
 
 @app.route('/')
 def index():
@@ -55,6 +76,31 @@ def delete(post_id):
     blog_posts = [post for post in blog_posts if post.get('id') != post_id ]
     delete_blog_post(blog_posts)
     return redirect(url_for('index'))
+
+
+@app.route('/update/<int:post_id>', methods=['GET', 'POST'])
+def update(post_id):
+    # Fetch the blog posts from the JSON file
+    post = fetch_post_by_id(post_id)
+    if post is None:
+        # Post not found
+        return "Post not found", 404
+
+    if request.method == 'POST':
+    # Update the post in the JSON file
+        author = request.form.get('author')
+        title = request.form.get('title')
+        content = request.form.get('content')
+
+        updated_post = {"id": post['id'], "author": author, "title": title, "content": content}
+        update_blog_post(updated_post)
+
+    # Redirect back to index
+        return redirect(url_for('index'))
+
+    # Else, it's a GET request
+    # So display the update.html page
+    return render_template('update.html', post=post)
 
 
 if __name__ == '__main__':
