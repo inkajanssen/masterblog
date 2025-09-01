@@ -1,74 +1,12 @@
-import json
-from flask import Flask, render_template, request, redirect, url_for
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash
+from dotenv import load_dotenv
+
+from data import *
 
 app = Flask(__name__)
-
-
-def load_blog_posts():
-    """
-    Load the Json Data
-    :return:
-    """
-    try:
-        with open("data/blog_post_data.json", "r", encoding="utf-8") as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return []
-
-
-def save_blog_posts(entry: dict):
-    """
-    Saves a new post at the end of the JSON data
-    :param entry:
-    :return:
-    """
-    blog_posts = load_blog_posts()
-    blog_posts.append(entry)
-
-    with open("data/blog_post_data.json", "w", encoding="utf-8") as file:
-        json.dump(blog_posts, file)
-
-
-def delete_blog_post(new_blog_posts:list):
-    """
-    Saves after deleting a post
-    :param new_blog_posts:
-    :return:
-    """
-    with open("data/blog_post_data.json", "w", encoding="utf-8") as file:
-        json.dump(new_blog_posts, file)
-
-
-def update_blog_post(new_blog_post:dict):
-    """
-    Updates a post and saves it
-    :param new_blog_post:
-    :return:
-    """
-    blog_posts = load_blog_posts()
-
-    for post in blog_posts:
-        if post.get('id') == new_blog_post.get('id'):
-            post['author'] = new_blog_post.get('author')
-            post['title'] = new_blog_post.get('title')
-            post['content'] = new_blog_post.get('content')
-            break
-
-    with open("data/blog_post_data.json", "w", encoding="utf-8") as file:
-        json.dump(blog_posts, file)
-
-
-def fetch_post_by_id(post_id):
-    """
-    Fetches post by id
-    :param post_id:
-    :return:
-    """
-    blog_posts = load_blog_posts()
-    for post in blog_posts:
-        if post_id == post.get('id'):
-            return post
-    return f"{post_id} not found in the blog posts"
+load_dotenv()
+app.secret_key = os.getenv('SECRET_KEY')
 
 
 @app.route('/')
@@ -91,17 +29,23 @@ def add():
     """
     if request.method == 'POST':
         blog_posts = load_blog_posts()
-        author = request.form.get('author')
-        title = request.form.get('title')
-        content = request.form.get('content')
-        blog_id = len(blog_posts) + 1
+        author = request.form.get('author').strip()
+        title = request.form.get('title').strip()
+        content = request.form.get('content').strip()
 
-        new_post = {"id": blog_id, "author": author, "title": title, "content": content}
+        if not author or not title or not content:
+            flash("You need to fill out every field")
+            return redirect(url_for('add'))
+
+        # load last blog_post id and add 1
+        blog_id = blog_posts[-1]['id'] + 1
+        new_post = {"id": blog_id, "author": author, "title": title,
+                    "content": content}
         save_blog_posts(new_post)
 
         return redirect(url_for('index'))
 
-    return render_template('add.html')
+    return render_template('add.html', author='', title='', content='')
 
 
 @app.route('/delete/<int:post_id>', methods=['POST'])

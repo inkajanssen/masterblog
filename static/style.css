@@ -36,6 +36,17 @@ h1 {
     font-family: Arial, sans-serif;
 }
 
+.flashes {
+    list-style-type: none;
+    font-size: 1.2rem;
+    color: #a94442;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
 .form-group {
     margin-bottom: 1em;
 }
