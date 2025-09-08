@@ -10,10 +10,12 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 
 def input_validation(author, title, content):
+    """
+    Validate the content of the post.
+    """
     if not author or not title or not content:
         return False
     return True
-
 
 
 @app.route('/')
@@ -45,7 +47,7 @@ def add():
             return redirect(url_for('add'))
 
         # load last blog_post id and add 1
-        blog_id = blog_posts[-1]['id'] + 1
+        blog_id = max(post['id'] for post in blog_posts) + 1
         new_post = {"id": blog_id, "author": author, "title": title,
                     "content": content}
         save_blog_posts(new_post)
