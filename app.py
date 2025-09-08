@@ -9,6 +9,13 @@ load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
 
 
+def input_validation(author, title, content):
+    if not author or not title or not content:
+        return False
+    return True
+
+
+
 @app.route('/')
 def index():
     """
@@ -33,7 +40,7 @@ def add():
         title = request.form.get('title').strip()
         content = request.form.get('content').strip()
 
-        if not author or not title or not content:
+        if not input_validation(author,title, content):
             flash("You need to fill out every field")
             return redirect(url_for('add'))
 
@@ -81,6 +88,9 @@ def update(post_id):
         author = request.form.get('author')
         title = request.form.get('title')
         content = request.form.get('content')
+
+        if not input_validation(author, title, content):
+            redirect(url_for('update', post_id=post_id))
 
         updated_post = {"id": post['id'], "author": author, "title": title, "content": content}
         update_blog_post(updated_post)
