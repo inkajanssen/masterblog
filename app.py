@@ -47,7 +47,10 @@ def add():
             return redirect(url_for('add'))
 
         # load last blog_post id and add 1
-        blog_id = max(post['id'] for post in blog_posts) + 1
+        if blog_posts:
+            blog_id = max(post['id'] for post in blog_posts) + 1
+        else:
+            blog_id = 1
         new_post = {"id": blog_id, "author": author, "title": title,
                     "content": content}
         save_blog_posts(new_post)
