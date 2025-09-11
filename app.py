@@ -87,11 +87,12 @@ def update(post_id):
 
     if request.method == 'POST':
     # Update the post in the JSON file
-        author = request.form.get('author')
-        title = request.form.get('title')
-        content = request.form.get('content')
+        author = request.form.get('author').strip()
+        title = request.form.get('title').strip()
+        content = request.form.get('content').strip()
 
         if not input_validation(author, title, content):
+            flash("You need to fill out every field")
             redirect(url_for('update', post_id=post_id))
 
         updated_post = {"id": post['id'], "author": author, "title": title, "content": content}
